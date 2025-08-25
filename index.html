@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ágape Moda – Catálogo de Ropa para Mujer</title>
+  <meta name="description" content="Ágape Moda: Catálogo de ropa para mujer. Casual, oficina, noche, básicos y accesorios." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#E91E63; /* rosa principal */
+      --brand-2:#7B1FA2; /* morado de apoyo */
+      --soft:#fff5f8;   /* fondo suave */
+      --text:#2b2b2b;
+    }
+    body{font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; color:var(--text)}
+    .navbar{backdrop-filter: saturate(140%) blur(6px)}
+    .navbar-brand{font-weight:700; letter-spacing:.5px}
+    .brand-dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--brand);margin-left:.4rem}
+    .btn-brand{background:var(--brand); border-color:var(--brand)}
+    .btn-brand:hover{background:#c2185b; border-color:#c2185b}
+    .text-brand{color:var(--brand)!important}
+    .badge-brand{background:var(--brand)}
+
+    /* Hero */
+    .hero{
+      background: radial-gradient( circle at 10% 10%, rgba(233,30,99,.15) 0%, transparent 40% ),
+                  radial-gradient( circle at 90% 20%, rgba(123,31,162,.12) 0%, transparent 35% ),
+                  linear-gradient(180deg, #fff, #fff);
+    }
+    .hero-image{
+      background-image:url('https://images.unsplash.com/photo-1520975922284-4b67a1b3ded0?q=80&w=1800&auto=format&fit=crop');
+      background-size:cover; background-position:center; border-radius:1.25rem; min-height:320px;
+      box-shadow:0 20px 60px rgba(233,30,99,.15)
+    }
+
+    /* CARRUSEL */
+    .carousel-item img {
+    height: 400px;       /* Ajusta según lo que necesites */
+    object-fit: cover;   /* Recorta la imagen sin deformarla */
+    }
+
+    .overlay{
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5); /* negro con opacidad */
+    }
+
+    /* MODAL PRUEBA SOCIAL */
+    .purchase-modal {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 350px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      padding: 15px;
+      display: none;
+      animation: fadeInUp 1s ease;
+      z-index: 9999;
+    }
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .purchase-header {
+      font-weight: bold;
+      color: #d63384;
+      margin-bottom: 5px;
+    }
+    .purchase-body {
+      font-size: 16px;
+    }
+
+    /* Chips */
+    .filter-chip{cursor:pointer; border:1px solid #eee; padding:.5rem 1rem; border-radius:999px; background:#fff}
+    .filter-chip.active{background:var(--brand); color:#fff; border-color:transparent}
+
+    /* Cards */
+    .card{border:none; box-shadow:0 10px 30px rgba(0,0,0,.06); border-radius:1rem}
+    .card-img-top{border-top-left-radius:1rem; border-top-right-radius:1rem; aspect-ratio:4/5; object-fit:cover}
+    .price{font-weight:700}
+    .tag{position:absolute; top:.75rem; left:.75rem}
+
+    /* Footer */
+    footer{background:linear-gradient(180deg, #fff, var(--soft))}
+
+    /* Back to top */
+    #backToTop{position:fixed; right:1rem; bottom:1rem; display:none}
+  </style>
+</head>
+<body>
+    <!--PRUEBA SOCIAL-->
+    <div class="purchase-modal" id="purchaseModal">
+    <div class="purchase-header">🛍️ Nueva compra</div>
+    <div class="purchase-body" id="purchaseText">
+      <!-- Aquí aparece la info -->
+    </div>
+    </div>
+
+    <!-- Audio de caja registradora -->
+    
+    <!-- Elemento de audio -->
+    <audio id="cashSound" preload="auto">
+        <source src="https://www.free-stock-music.com/music/sound-effects-library/mp3/sound-effects-library-cash-register-sound.mp3" type="audio/mpeg">
+        <!-- Asegúrate de reemplazar con la URL real del archivo MP3 descargado o alojado -->
+    </audio>
+
+    <script>
+        const modal = document.getElementById("purchaseModal");
+        const text = document.getElementById("purchaseText");
+        const cashSound = document.getElementById("cashSound");
+
+        const clientes = [
+        "María", "Lucía", "Andrea", "Carmen", "Valeria", 
+        "Sofía", "Ana", "Paola", "Diana", "Gabriela",
+        "Claudia", "Patricia", "Rosa", "Marta", "Isabel"
+        ];
+
+        const provincias = [
+        "Arequipa", "Cusco", "Trujillo", "Chiclayo", "Piura",
+        "Tacna", "Huancayo", "Pucallpa", "Tarapoto", "Iquitos"
+        ];
+
+        const envios = [
+        "Lima - Motorizado",
+        "Lima - Shalom",
+        "Provincia - Shalom"
+        ];
+
+        function mostrarCompra() {
+        const cliente = clientes[Math.floor(Math.random() * clientes.length)];
+        const monto = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+
+        let envio = envios[Math.floor(Math.random() * envios.length)];
+        if(envio.includes("Provincia")) {
+            const prov = provincias[Math.floor(Math.random() * provincias.length)];
+            envio = `${provinciaAleatoria()} - Shalom`;
+        }
+
+        text.innerHTML = `<strong>${cliente}</strong> acaba de comprar por <strong>S/ ${monto}</strong><br><small>Método de envío: ${envio}</small>`;
+        
+        modal.style.display = "block";
+        cashSound.play(); // 🔔 Suena la caja registradora
+
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 5000);
+        }
+
+        function provinciaAleatoria() {
+        return provincias[Math.floor(Math.random() * provincias.length)];
+        }
+
+        // Cada 10 segundos aparece una nueva compra
+        setInterval(mostrarCompra, 10000);
+    </script>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white sticky-top border-bottom">
+        <div class="container py-2">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+            <i class="bi bi-flower1 text-brand fs-4"></i>
+            <span>Ágape Moda</span>
+            <span class="brand-dot"></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item"><a class="nav-link active" href="#catalogo">Catálogo</a></li>
+            <li class="nav-item"><a class="nav-link" href="#sobre">Sobre</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+            <!--<li class="nav-item ms-lg-3">
+                <form role="search" class="d-flex" onsubmit="event.preventDefault()">
+                <input id="search" class="form-control" type="search" placeholder="Buscar prendas…" aria-label="Buscar" />
+                </form>
+            </li>-->
+            </ul>
+        </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero py-5">
+        <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+            <h1 class="display-5 fw-bold mb-3">Vístete con <span class="text-brand">estilo</span>, elegancia y glamour.</h1>
+            <p class="lead">Descubre piezas atemporales, cómodas y modernas para cada ocasión: casual, oficina, noche y más.</p>
+            <div class="d-flex gap-2 mt-3">
+                <a href="#catalogo" class="btn btn-brand btn-lg text-white"><i class="bi bi-bag-heart me-2"></i> Ver catálogo</a>
+                <a href="#contacto" class="btn btn-outline-dark btn-lg"><i class="bi bi-whatsapp me-2"></i> Hacer pedido</a>
+            </div>
+            </div>
+            <div class="col-lg-6">
+            <div class="hero-image">
+                
+                <!--BANNER CARRUSEL-->
+                <!-- BANNER DE PROMOCIONES ÁGAPE MODA -->
+                <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    
+                    <!-- Slide 1 -->
+                    <div class="carousel-item active">
+                    <img src="https://images.unsplash.com/photo-1583316174775-bd6dc0e9f298?q=80&w=1200" class="d-block w-100" alt="Promo 1">
+                    <div class="overlay"></div>
+                    <div class="carousel-caption d-none d-md-block promo-caption">
+                        <h2>✨ 50% OFF en Vestidos</h2>
+                        <p>Renueva tu look con Ágape Moda</p>
+                    </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1705572722888-844a44ceecd9?q=80&w=1200" class="d-block w-100" alt="Promo 2">
+                    <div class="overlay"></div>
+                    <div class="carousel-caption d-none d-md-block promo-caption">
+                        <h2>🎀 2x1 en Accesorios</h2>
+                        <p>Combina estilo y elegancia</p>
+                    </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1606844128209-80ba0f9afd34?q=80&w=1200" class="d-block w-100" alt="Promo 3">
+                    <div class="overlay"></div>
+                    <div class="carousel-caption d-none d-md-block promo-caption">
+                        <h2>🌸 Nueva Colección</h2>
+                        <p>Moda femenina que inspira</p>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Controles -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+
+                <!-- Indicadores -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="2"></button>
+                </div>
+                </div>
+
+
+            </div>
+            </div>
+        </div>
+        </div>
+    </header>
+
+    <!-- CATALOGO -->
+    <section id="catalogo" class="py-5">
+        <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <h2 class="h3 m-0">Catálogo</h2>
+            <div class="d-flex flex-wrap gap-2" id="filters">
+            <span class="filter-chip active" data-filter="all">Todas</span>
+            <span class="filter-chip" data-filter="casual">Casual Chic</span>
+            <span class="filter-chip" data-filter="oficina">Oficina & Formal</span>
+            <span class="filter-chip" data-filter="noche">Noche & Glamour</span>
+            <span class="filter-chip" data-filter="basicos">Básicos Esenciales</span>
+            <span class="filter-chip" data-filter="accesorios">Accesorios</span>
+            </div>
+        </div>
+
+        <div class="row g-4" id="productGrid">
+            <!-- PRODUCTO: Vestido Floral Elegancia -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="casual" data-name="vestido floral elegancia" data-price="159">
+            <div class="card h-100 position-relative">
+                <span class="badge badge-brand tag">Nuevo</span>
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1627126182980-cdc82a006d50?q=80&w=800&auto=format&fit=crop" alt="Vestido Floral Elegancia">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Vestido Floral Elegancia</h3>
+                <p class="text-muted small mb-2">Tallas: S, M, L</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 159</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Vestido Floral Elegancia" data-img="https://images.unsplash.com/photo-1520975922284-4b67a1b3ded0?q=80&w=1200&auto=format&fit=crop" data-desc="Vestido largo floral ideal para brunch o salidas casuales." data-price="159"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20el%20Vestido%20Floral%20Elegancia%20(talla%20S%2FM%2FL).%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Blazer Ejecutivo Premium -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="oficina" data-name="blazer ejecutivo premium" data-price="229">
+            <div class="card h-100 position-relative">
+                <span class="badge text-bg-dark tag">Top</span>
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1650784854534-cdb3bc19108c?q=80&w=800&auto=format&fit=crop" alt="Blazer Ejecutivo Premium">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Blazer Ejecutivo Premium</h3>
+                <p class="text-muted small mb-2">Colores: Negro, Beige, Azul Marino</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 229</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Blazer Ejecutivo Premium" data-img="https://images.unsplash.com/photo-1548625149-9129dad7e329?q=80&w=1200&auto=format&fit=crop" data-desc="Corte moderno y sofisticado para destacar en la oficina." data-price="229"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20el%20Blazer%20Ejecutivo%20Premium.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Jeans Mom Fit -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="casual" data-name="jeans mom fit" data-price="139">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1475178626620-a4d074967452?q=80&w=800&auto=format&fit=crop" alt="Jeans Mom Fit">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Jeans Mom Fit</h3>
+                <p class="text-muted small mb-2">Colores: Azul clásico, Negro</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 139</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Jeans Mom Fit" data-img="https://images.unsplash.com/photo-1582005450386-52b25f82d9e5?q=80&w=1200&auto=format&fit=crop" data-desc="Ajuste cómodo y moderno, tiro alto." data-price="139"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20los%20Jeans%20Mom%20Fit.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Blusa Seda Minimal -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="basicos" data-name="blusa seda minimal" data-price="119">
+            <div class="card h-100 position-relative">
+                <span class="badge text-bg-warning tag">Oferta</span>
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1590588460172-2e7f65714644?q=80&w=800&auto=format&fit=crop" alt="Blusa Seda Minimal">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Blusa Seda Minimal</h3>
+                <p class="text-muted small mb-2">Colores: Blanco, Verde Oliva, Coral</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 119</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Blusa Seda Minimal" data-img="https://images.unsplash.com/photo-1589985270826-4c8a58aa61de?q=80&w=1200&auto=format&fit=crop" data-desc="Blusa ligera con acabado sedoso y corte minimalista." data-price="119"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20la%20Blusa%20Seda%20Minimal.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Vestido Nocturno Satinado -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="noche" data-name="vestido nocturno satinado" data-price="249">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1584061606850-a57652a323a4?q=80&w=800&auto=format&fit=crop" alt="Vestido Nocturno Satinado">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Vestido Nocturno Satinado</h3>
+                <p class="text-muted small mb-2">Corte midi, tiras finas</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 249</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Vestido Nocturno Satinado" data-img="https://images.unsplash.com/photo-1545912452-8aea7e25a03a?q=80&w=1200&auto=format&fit=crop" data-desc="Vestido elegante de satén con caída suave, ideal para eventos de noche." data-price="249"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20el%20Vestido%20Nocturno%20Satinado.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Falda Plisada Soft -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="oficina" data-name="falda plisada soft" data-price="149">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?q=80&w=800&auto=format&fit=crop" alt="Falda Plisada Soft">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Falda Plisada Soft</h3>
+                <p class="text-muted small mb-2">Tela suave, tiro alto</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 149</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Falda Plisada Soft" data-img="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?q=80&w=1200&auto=format&fit=crop" data-desc="Falda midi plisada, perfecta para oficina y reuniones formales." data-price="149"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20la%20Falda%20Plisada%20Soft.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Cartera Minimal Black -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="accesorios" data-name="cartera minimal black" data-price="169">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop" alt="Cartera Minimal Black">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Cartera Minimal Black</h3>
+                <p class="text-muted small mb-2">Diseño atemporal</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 169</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Cartera Minimal Black" data-img="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" data-desc="Cartera de mano minimalista, combina con cualquier look." data-price="169"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20la%20Cartera%20Minimal%20Black.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Camisa Oversize Linen -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="basicos" data-name="camisa oversize linen" data-price="139">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop" alt="Camisa Oversize Linen">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Camisa Oversize Linen</h3>
+                <p class="text-muted small mb-2">Tela lino, fresca</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 139</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Camisa Oversize Linen" data-img="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop" data-desc="Camisa holgada de lino, ideal para climas cálidos." data-price="139"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20la%20Camisa%20Oversize%20Linen.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Pantalón Palazzo Soft -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="oficina" data-name="pantalon palazzo soft" data-price="179">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1520975822663-2848d0371a18?q=80&w=800&auto=format&fit=crop" alt="Pantalón Palazzo Soft">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Pantalón Palazzo Soft</h3>
+                <p class="text-muted small mb-2">Corte fluido, tiro alto</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 179</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Pantalón Palazzo Soft" data-img="https://images.unsplash.com/photo-1520975822663-2848d0371a18?q=80&w=1200&auto=format&fit=crop" data-desc="Pantalón palazzo elegante y cómodo para oficina." data-price="179"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20el%20Pantal%C3%B3n%20Palazzo%20Soft.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Top Lencero Satín -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="noche" data-name="top lencero satin" data-price="89">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1520975932514-164d2c6b69f5?q=80&w=800&auto=format&fit=crop" alt="Top Lencero Satín">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Top Lencero Satín</h3>
+                <p class="text-muted small mb-2">Tiras regulables</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 89</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Top Lencero Satín" data-img="https://images.unsplash.com/photo-1520975932514-164d2c6b69f5?q=80&w=1200&auto=format&fit=crop" data-desc="Top satinado delicado para looks de noche." data-price="89"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20el%20Top%20Lencero%20Sat%C3%ADn.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Set Aretes Pearl Duo -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="accesorios" data-name="set aretes pearl duo" data-price="59">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop" alt="Set Aretes Pearl Duo">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Set Aretes Pearl Duo</h3>
+                <p class="text-muted small mb-2">Baño de oro</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 59</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Set Aretes Pearl Duo" data-img="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200&auto=format&fit=crop" data-desc="Par de aretes minimal con perlas, elegantes y discretos." data-price="59"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20el%20Set%20Aretes%20Pearl%20Duo.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Polera Soft Cream -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="basicos" data-name="polera soft cream" data-price="129">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=800&auto=format&fit=crop" alt="Polera Soft Cream">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Polera Soft Cream</h3>
+                <p class="text-muted small mb-2">Algodón orgánico</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 129</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Polera Soft Cream" data-img="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop" data-desc="Polera oversize suave, ideal para el día a día." data-price="129"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20la%20Polera%20Soft%20Cream.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Vestido Wrap Daylight -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="casual" data-name="vestido wrap daylight" data-price="179">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1503342217505-b0a15cf70489?q=80&w=800&auto=format&fit=crop" alt="Vestido Wrap Daylight">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Vestido Wrap Daylight</h3>
+                <p class="text-muted small mb-2">Cruzado, escote en V</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 179</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Vestido Wrap Daylight" data-img="https://images.unsplash.com/photo-1503342217505-b0a15cf70489?q=80&w=1200&auto=format&fit=crop" data-desc="Vestido cruzado fresco y femenino para el día." data-price="179"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20el%20Vestido%20Wrap%20Daylight.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- PRODUCTO: Blusa Cuello Halter -->
+            <div class="col-6 col-md-4 col-lg-3" data-category="noche" data-name="blusa cuello halter" data-price="119">
+            <div class="card h-100 position-relative">
+                <img class="card-img-top" src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=800&auto=format&fit=crop" alt="Blusa Cuello Halter">
+                <div class="card-body d-flex flex-column">
+                <h3 class="h6">Blusa Cuello Halter</h3>
+                <p class="text-muted small mb-2">Tejido fluido</p>
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                    <span class="price">S/ 119</span>
+                    <div class="btn-group">
+                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#productModal" data-title="Blusa Cuello Halter" data-img="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=1200&auto=format&fit=crop" data-desc="Blusa elegante con cuello halter para noches especiales." data-price="119"><i class="bi bi-eye"></i></button>
+                    <a class="btn btn-brand btn-sm" target="_blank" href="https://wa.me/51999999999?text=Hola%20Ágape%20Moda%2C%20quiero%20la%20Blusa%20Cuello%20Halter.%20%F0%9F%92%95"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+        </div>
+        </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section id="sobre" class="py-5 border-top">
+        <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+            <h2 class="h3">Sobre <span class="text-brand">Ágape Moda</span></h2>
+            <p>Creemos en una moda que celebra tu identidad con piezas versátiles, de calidad y atemporales. Nuestro catálogo está curado para acompañarte en cada momento: trabajo, salidas casuales, eventos y más.</p>
+            <ul class="list-unstyled small">
+                <li><i class="bi bi-check2-circle text-brand me-2"></i>Pagos por Yape</li>
+                <li><i class="bi bi-check2-circle text-brand me-2"></i>Envíos a todo el Perú: De Lunes a Sábados (no incluye feriados)</li>
+                <li><i class="bi bi-check2-circle text-brand me-2"></i>No hacemos cambios ni devoluciones</li>
+            </ul>
+            </div>
+            <div class="col-lg-6">
+            <div class="row g-3">
+                <div class="col-6"><img class="w-100 rounded-4" alt="look 1" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop"></div>
+                <div class="col-6"><img class="w-100 rounded-4" alt="look 2" src="https://images.unsplash.com/photo-1520974735194-6b14e34c8f49?q=80&w=800&auto=format&fit=crop"></div>
+                <div class="col-12"><img class="w-100 rounded-4" alt="look 3" src="https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1600&auto=format&fit=crop"></div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto" class="py-5">
+        <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+            <h2 class="h3">¡Haz tu pedido ahora!</h2>
+            <p>¿Te gustó algún producto? Escríbenos por WhatsApp y finaliza tu compra.</p>
+            <a class="btn btn-success btn-lg" target="_blank" href="https://wa.me/51974892987?text=Hola%20%C3%81gape%20Moda%2C%20me%20gustar%C3%ADa%20hacer%20un%20pedido."><i class="bi bi-whatsapp me-2"></i>Comprar por WhatsApp</a>
+            <div class="mt-3 small text-muted">Agreganos: <strong>+51 974 892 987</strong> como Ágape Store.</div>
+            </div>
+            <div class="col-lg-6">
+            <div class="p-4 rounded-4" style="background:var(--soft)">
+                <div class="d-flex align-items-center gap-2 mb-2"><i class="bi bi-geo-alt text-brand"></i><strong>Envíos todos los días a nivel Nacional</strong></div>
+                <p class="small mb-3">De lunes a sábados, en Lima por motorizado o Shalom</p>
+                <div class="d-flex align-items-center gap-2 mb-2"><i class="bi bi-envelope text-brand"></i><strong>Email</strong></div>
+                <p class="small mb-3">contacto@agapemoda.com</p>
+                <div class="d-flex align-items-center gap-2 mb-2"><i class="bi bi-instagram text-brand"></i><strong>Instagram</strong></div>
+                <p class="small mb-0">@agapemoda</p>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-4 border-top">
+        <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+        <div class="small">© <span id="year"></span> Ágape Moda. Todos los derechos reservados.</div>
+        <div class="d-flex gap-3">
+            <a href="#" class="text-decoration-none text-dark"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="text-decoration-none text-dark"><i class="bi bi-tiktok"></i></a>
+            <a href="#" class="text-decoration-none text-dark"><i class="bi bi-facebook"></i></a>
+        </div>
+        </div>
+    </footer>
+
+    <!-- Back to top -->
+    <button id="backToTop" class="btn btn-dark rounded-circle p-3" aria-label="Volver arriba"><i class="bi bi-arrow-up"></i></button>
+
+    <!-- MODAL DETALLE PRODUCTO -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+            <div class="row g-0">
+                <div class="col-lg-6">
+                <img id="modalImg" class="w-100 h-100" style="object-fit:cover; aspect-ratio:4/5" alt="Detalle producto">
+                </div>
+                <div class="col-lg-6 p-4">
+                <h3 id="modalTitle" class="h4"></h3>
+                <div class="text-brand fw-semibold mb-3" id="modalPrice"></div>
+                <p id="modalDesc" class="small text-muted"></p>
+                <div class="mb-3">
+                    <label class="form-label">Talla</label>
+                    <div class="d-flex flex-wrap gap-2">
+                    <input type="radio" class="btn-check" name="size" id="sizeS" autocomplete="off" checked>
+                    <label class="btn btn-outline-dark btn-sm" for="sizeS">S</label>
+                    <input type="radio" class="btn-check" name="size" id="sizeM" autocomplete="off">
+                    <label class="btn btn-outline-dark btn-sm" for="sizeM">M</label>
+                    <input type="radio" class="btn-check" name="size" id="sizeL" autocomplete="off">
+                    <label class="btn btn-outline-dark btn-sm" for="sizeL">L</label>
+                    </div>
+                </div>
+                <div class="d-grid gap-2">
+                    <a id="modalWhats" target="_blank" class="btn btn-success"><i class="bi bi-whatsapp me-2"></i>Pedir por WhatsApp</a>
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Año en footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Filtro por chips
+    const chips = document.querySelectorAll('.filter-chip');
+    const grid = document.getElementById('productGrid');
+    const cards = grid.querySelectorAll('[data-category]');
+
+    chips.forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        chips.forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+        const f = chip.getAttribute('data-filter');
+        cards.forEach(card=>{
+          const show = (f==='all') || card.getAttribute('data-category')===f;
+          card.style.display = show ? '' : 'none';
+        });
+      });
+    });
+
+    // Búsqueda por texto
+    const search = document.getElementById('search');
+    search.addEventListener('input', ()=>{
+      const q = search.value.trim().toLowerCase();
+      cards.forEach(card=>{
+        const name = card.getAttribute('data-name');
+        card.style.display = name.includes(q) ? '' : 'none';
+      });
+    });
+
+    // Modal de producto dinámico
+    const modalEl = document.getElementById('productModal');
+    modalEl.addEventListener('show.bs.modal', (event)=>{
+      const btn = event.relatedTarget;
+      const title = btn.getAttribute('data-title');
+      const img = btn.getAttribute('data-img');
+      const desc = btn.getAttribute('data-desc');
+      const price = btn.getAttribute('data-price');
+
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalImg').src = img;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalPrice').textContent = `S/ ${price}`;
+
+      // Enlace WhatsApp con producto
+      const wa = `https://wa.me/51999999999?text=Hola%20%C3%81gape%20Moda%2C%20quiero%20el%20${encodeURIComponent(title)}.%20Talla%3A%20${document.getElementById('sizeS').checked?'S':document.getElementById('sizeM').checked?'M':'L'}.`;
+      const link = document.getElementById('modalWhats');
+      link.href = wa;
+    });
+
+    // Back to top
+    const toTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', ()=>{
+      toTop.style.display = window.scrollY > 400 ? 'inline-flex' : 'none';
+    });
+    toTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
